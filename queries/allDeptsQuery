@@ -1,5 +1,0 @@
-const allDeptsQuery = (results) => {
-    console.log(results);
-}
-
-module.exports = allDeptsQuery;
