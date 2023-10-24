@@ -45,12 +45,11 @@ const addDepartment = () => {
     console.log('Department added successfully.');
     });
     init();
-    updateDepts();
   });
-  
 };
 
 const addRole = () => {
+  updateDepts();
   inquirer.prompt(addRolePrompts)
   .then((answer) => {
     let newRoleDeptId;
@@ -64,11 +63,11 @@ const addRole = () => {
       });
     });
     init();
-    updateRoles();
   });
-}
+};
 
 const addEmployee = () => {
+  updateRoles();
   inquirer.prompt(addEmployeePrompts)
   .then((answer) => {
     let newEmpRoleId;
@@ -86,24 +85,24 @@ const addEmployee = () => {
       }); 
     }); 
     init();
-    updateEmployees();
+    // updateEmployees();
   }); 
 }; 
 
-// const updateEmployeeRole = () => {
-//   inquirer.prompt(updateEmpRolePrompts)
-//   .then((answer) => {
-//     let updatedRoleId;
-//     let updatedRoleName = answer.newEmpRole;
-//     db.query(`SELECT id FROM role WHERE title = '${updatedRoleName}'`, function (err, results) {
-//       err ? console.log(err) : 
-//       updatedRoleId = results[0].id;
-//       console.log(updatedRoleId)
+const updateEmployeeRole = () => {
+  inquirer.prompt(updateEmpRolePrompts)
+  .then((answer) => {
+    let updatedRoleId;
+    let updatedRoleName = answer.newEmpRole;
+    db.query(`SELECT id FROM role WHERE title = '${updatedRoleName}'`, function (err, results) {
+      err ? console.log(err) : 
+      updatedRoleId = results[0].id;
+      console.log(updatedRoleId)
   
-//     });
-//   init();
-//   });
-// };
+    });
+  init();
+  });
+};
 
   
     // db.query('UPDATE employee SET role_id = ? WHERE id = ?', [])
