@@ -1,6 +1,6 @@
 const updatedRoleChoices = ['Director of Engineering', 'Front-end Developer', 'Back-end Developer', 'Director of Product Management', 'Product Manager', 'UX Designer', 'Director of Sales', 'Sales Representative', 'Digital Marketing Specialist', 'Director of HR', 'Recruitment Specialist', 'Employee Relations Specialist'];
 
-const updatedManagerList = []
+const updatedManagerList = ['John Smith', 'Maria Garcia', 'Mohammed Abdul', 'Ling Chen'];
 
 const addEmployeePrompts = [
     {
