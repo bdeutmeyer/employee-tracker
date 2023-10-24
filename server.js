@@ -2,8 +2,9 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const initialPrompts = require('./prompts/initialPrompts');
 const addDeptPrompt = require('./prompts/addDeptPrompt');
-const { addRolePrompts, updatedDeptChoices } = require('./prompts/addRolePrompts');
-const { addEmployeePrompts, updatedRoleChoices } = require('./prompts/addEmployeePrompts');
+const addRolePrompts = require('./prompts/addRolePrompts');
+const addEmployeePrompts = require('./prompts/addEmployeePrompts');
+const { updateDepts } = require('./prompts/updateArrayFunctions');
 
 // create the connection to database
 const db = mysql.createConnection({
@@ -41,9 +42,9 @@ const addDepartment = () => {
   .then((answer) => {
     db.query(`INSERT INTO department (name) VALUE ('${answer.addDept}')`, function (err) {
     err ? console.log(err) : 
-    updatedDeptChoices.push(answer.addDept);
     console.log('Department added successfully.');
     });
+    updateDepts();
     init();
   });
 };
@@ -51,22 +52,16 @@ const addDepartment = () => {
 const addRole = () => {
   inquirer.prompt(addRolePrompts)
   .then((answer) => {
-    //Fix department part - needs to be department id instead of name
     let newRoleDeptId;
     let newRoleDeptName = answer.newRoleDept;
-    console.log(newRoleDeptName);
-    db.query(`SELECT * FROM department WHERE name = '${newRoleDeptName}'`, function (err, results) {
+    db.query(`SELECT id FROM department WHERE name = '${newRoleDeptName}'`, function (err, results) {
       err ? console.log(err) : 
-      newRoleDeptId = results;
+      newRoleDeptId = results[0].id;
+      db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${answer.addRole}', '${answer.newRoleSalary}', '${newRoleDeptId}')`, function (err) {
+        err ? console.log(err) : 
+        console.log('Role added successfully.')
+      });
     });
-    console.log(newRoleDeptId);
-    
-    // console.log(newRoleDeptId);
-    // db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${answer.addRole}', '${answer.newRoleSalary}', '${newRoleDeptId}')`, function (err) {
-    //   err ? console.log(err) : 
-    //   updatedRoleChoices.push(answer.addRole);
-    //   console.log('Role added successfully.')
-    // });
     init();
   });
 }
@@ -74,13 +69,23 @@ const addRole = () => {
 const addEmployee = () => {
   inquirer.prompt(addEmployeePrompts)
   .then((answer) => {
-    //Fix department and role id and manager id parts - needs to be id instead of name
-    db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUE ('${answer.newEmpFirstName}', '${answer.newEmpLastName}', '${answer.newEmpRole}, '${answer.newEmpManager}')`, function (err) {
-      err ? console.log(err) : console.log('Role added successfully.')
-    })
+    let newEmpRoleId;
+    let newEmpRoleName = answer.newEmpRole;
+    db.query(`SELECT id FROM role WHERE title = '${newEmpRoleName}'`, function (err, results) {
+      err ? console.log(err) : 
+      newEmpRoleId = results[0].id;
+      let newEmpMgrId;
+      let newEmpMgrName = answer.newEmpManager;
+      db.query(`SELECT id FROM employee WHERE CONCAT(first_name, ' ', last_name) = '${newEmpMgrName}'`, function (err, results) {
+        err ? console.log(err) : newEmpMgrId = results[0].id;
+        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answer.newEmpFirstName}', '${answer.newEmpLastName}', ${newEmpRoleId}, ${newEmpMgrId})`, function (err) {
+          err ? console.log(err) : console.log('Employee added successfully.')
+        }); 
+      }); 
+    }); 
     init();
-  });
-}
+  }); 
+}; 
 
 const updateEmployeeRole = () => {
   inquirer.prompt()
@@ -120,12 +125,12 @@ const init = () => {
   })
   .catch((error) => {
     if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
+      console.log('Prompt couldn\'t be rendered in the current environment');
     } else {
-      // Something else went wrong
+      console.log(error);
     }
   })
 }
 
-module.exports = db;
+updateDepts();
 init();
