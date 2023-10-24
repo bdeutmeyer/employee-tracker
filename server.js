@@ -2,9 +2,9 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const initialPrompts = require('./prompts/initialPrompts');
 const addDeptPrompt = require('./prompts/addDeptPrompt');
-const addRolePrompts = require('./prompts/addRolePrompts');
-const addEmployeePrompts = require('./prompts/addEmployeePrompts');
-const { updateDepts } = require('./prompts/updateArrayFunctions');
+const { updateDepts, addRolePrompts } = require('./prompts/addRolePrompts');
+const { updateRoles, updateManagers, addEmployeePrompts } = require('./prompts/addEmployeePrompts');
+// const { updateEmployees, updateEmpRolePrompts } = require('./prompts/updateEmpRolePrompts');
 
 // create the connection to database
 const db = mysql.createConnection({
@@ -44,9 +44,10 @@ const addDepartment = () => {
     err ? console.log(err) : 
     console.log('Department added successfully.');
     });
-    updateDepts();
     init();
+    updateDepts();
   });
+  
 };
 
 const addRole = () => {
@@ -63,6 +64,7 @@ const addRole = () => {
       });
     });
     init();
+    updateRoles();
   });
 }
 
@@ -84,13 +86,28 @@ const addEmployee = () => {
       }); 
     }); 
     init();
+    updateEmployees();
   }); 
 }; 
 
-const updateEmployeeRole = () => {
-  inquirer.prompt()
-    db.query('UPDATE employee SET role_id = ? WHERE id = ?', [])
-}
+// const updateEmployeeRole = () => {
+//   inquirer.prompt(updateEmpRolePrompts)
+//   .then((answer) => {
+//     let updatedRoleId;
+//     let updatedRoleName = answer.newEmpRole;
+//     db.query(`SELECT id FROM role WHERE title = '${updatedRoleName}'`, function (err, results) {
+//       err ? console.log(err) : 
+//       updatedRoleId = results[0].id;
+//       console.log(updatedRoleId)
+  
+//     });
+//   init();
+//   });
+// };
+
+  
+    // db.query('UPDATE employee SET role_id = ? WHERE id = ?', [])
+
 
 const init = () => {
   inquirer  
@@ -131,6 +148,8 @@ const init = () => {
     }
   })
 }
-
 updateDepts();
+// updateRoles();
+// updateEmployees();
+// updateManagers();
 init();

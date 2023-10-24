@@ -1,4 +1,37 @@
-const {updatedRoleChoices, updatedManagerList} = require('./updateArrayFunctions');
+const mysql = require('mysql2');
+const db = mysql.createConnection({
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'rootroot',
+    database: 'employee_data_db'
+  },
+);
+
+const updatedRoleChoices = [];
+const updateRoles = () => {
+    db.query('Select title FROM role ORDER BY role.id ASC', function (err, results) {
+        if (err) {
+            console.log(err)
+        } else {
+            for(let i = 0; i < results.length; i++) {
+                updatedRoleChoices.push(results[i].title);
+            };
+        }
+    })
+};
+
+const updatedManagerChoices = [];
+const updateManagers = () => {
+    db.query('SELECT CONCAT(first_name, " ", last_name) AS manager_name FROM employee WHERE manager_id IS NULL ORDER BY employee.id ASC', function (err, results) {
+        if (err) {
+            console.log(err)
+        } else {
+            for(let i = 0; i < results.length; i++) {
+                updatedManagerChoices.push(results[i].manager_name);
+            };
+        }
+    })
+};
 
 const addEmployeePrompts = [
     {
@@ -21,8 +54,9 @@ const addEmployeePrompts = [
         type: 'list',
         name: 'newEmpManager',
         message: 'Who is the new employee\'s manager?',
-        choices: updatedManagerList
+        choices: updatedManagerChoices
     }
 ];
 
-module.exports = addEmployeePrompts;
+module.exports = { updateRoles, updateManagers, addEmployeePrompts };
+module.exports = updatedRoleChoices;
