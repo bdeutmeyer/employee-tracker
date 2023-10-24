@@ -1,5 +1,4 @@
-const updatedDeptChoices = ['Software Development', 'Project Management', 'Sales and Marketing', 'Human resources'];
-
+const updatedDeptChoices = require('./updateArrayFunctions');
 const addRolePrompts = [
     {
         type: 'input',
@@ -19,4 +18,4 @@ const addRolePrompts = [
     }
 ];
 
-module.exports = { updatedDeptChoices, addRolePrompts };
+module.exports = addRolePrompts;
