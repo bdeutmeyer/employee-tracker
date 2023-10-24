@@ -2,9 +2,9 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const initialPrompts = require('./prompts/initialPrompts');
 const addDeptPrompt = require('./prompts/addDeptPrompt');
+const {  addEmployeePrompts } = require('./prompts/addEmployeePrompts');
 const { updateDepts, addRolePrompts } = require('./prompts/addRolePrompts');
-const { updateRoles, updateManagers, addEmployeePrompts } = require('./prompts/addEmployeePrompts');
-// const { updateEmployees, updateEmpRolePrompts } = require('./prompts/updateEmpRolePrompts');
+const { updateEmpRolePrompts, updateEmployees } = require('./prompts/updateEmpRolePrompts');
 
 // create the connection to database
 const db = mysql.createConnection({
@@ -57,6 +57,7 @@ const addRole = () => {
     db.query(`SELECT id FROM department WHERE name = '${newRoleDeptName}'`, function (err, results) {
       err ? console.log(err) : 
       newRoleDeptId = results[0].id;
+      
       db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${answer.addRole}', '${answer.newRoleSalary}', '${newRoleDeptId}')`, function (err) {
         err ? console.log(err) : 
         console.log('Role added successfully.')
@@ -67,7 +68,6 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
-  updateRoles();
   inquirer.prompt(addEmployeePrompts)
   .then((answer) => {
     let newEmpRoleId;
@@ -75,38 +75,42 @@ const addEmployee = () => {
     db.query(`SELECT id FROM role WHERE title = '${newEmpRoleName}'`, function (err, results) {
       err ? console.log(err) : 
       newEmpRoleId = results[0].id;
+      
       let newEmpMgrId;
       let newEmpMgrName = answer.newEmpManager;
       db.query(`SELECT id FROM employee WHERE CONCAT(first_name, ' ', last_name) = '${newEmpMgrName}'`, function (err, results) {
         err ? console.log(err) : newEmpMgrId = results[0].id;
+        
         db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('${answer.newEmpFirstName}', '${answer.newEmpLastName}', ${newEmpRoleId}, ${newEmpMgrId})`, function (err) {
           err ? console.log(err) : console.log('Employee added successfully.')
         }); 
       }); 
     }); 
     init();
-    // updateEmployees();
   }); 
 }; 
 
 const updateEmployeeRole = () => {
+  updateEmployees();
   inquirer.prompt(updateEmpRolePrompts)
   .then((answer) => {
     let updatedRoleId;
-    let updatedRoleName = answer.newEmpRole;
+    let updatedRoleName = answer.whichRole;
     db.query(`SELECT id FROM role WHERE title = '${updatedRoleName}'`, function (err, results) {
-      err ? console.log(err) : 
-      updatedRoleId = results[0].id;
-      console.log(updatedRoleId)
-  
+      err ? console.log(err) : updatedRoleId = results[0].id;
+      
+      let updatedEmpId;
+      db.query(`SELECT id FROM employee WHERE CONCAT(first_name, " ", last_name) = '${answer.whichEmp}'`, function (err, results) {
+        err ? console.log(err) : updatedEmpId = results[0].id;
+      })
+
+      db.query('UPDATE employee SET role_id = ? WHERE id = ?', [updatedRoleId , updatedEmpId], function (err, results) {
+        err ? console.log(err) : console.log('Employee role updated successfully.')
+      })
     });
   init();
   });
 };
-
-  
-    // db.query('UPDATE employee SET role_id = ? WHERE id = ?', [])
-
 
 const init = () => {
   inquirer  

@@ -24,3 +24,5 @@ Select title from role ORDER BY role.id ASC;
 SELECT CONCAT(first_name, " ", last_name) AS manager_name from employee WHERE manager_id IS NULL ORDER BY employee.id ASC;
 
 UPDATE employee SET role_id = 6 WHERE id = 1;
+
+SELECT id FROM employee WHERE CONCAT(first_name, " ", last_name) = 'Léa Dubois';
