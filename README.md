@@ -1,4 +1,7 @@
-# employee-tracker
+# Employee Tracker
+
+## Credits
+The giant multi-join query for displaying the employee list came from Chat GPT.
 
 ## Your Task
 
