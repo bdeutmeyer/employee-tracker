@@ -6,9 +6,9 @@ const db = mysql.createConnection({
     database: 'employee_data_db'
   },
 );
-
+const updatedRoleChoices = [];
 const updateRoles = () => {
-    const updatedRoleChoices = [];
+    
     db.query('Select title FROM role ORDER BY role.id ASC', function (err, results) {
         if (err) {
             console.log(err)
@@ -18,11 +18,11 @@ const updateRoles = () => {
             };
         }
     })
-    return updatedRoleChoices;
+    // return updatedRoleChoices;
 };
 
-const updateManagers = () => {
-    const updatedManagerChoices = [];
+const updatedManagerChoices = [];
+const updateManagers = () => {    
     db.query('SELECT CONCAT(first_name, " ", last_name) AS manager_name FROM employee WHERE manager_id IS NULL ORDER BY employee.id ASC', function (err, results) {
         if (err) {
             console.log(err)
@@ -32,7 +32,7 @@ const updateManagers = () => {
             };
         }
     })
-    return updatedManagerChoices;
+    // return updatedManagerChoices;
 };
 
 const addEmployeePrompts = [
@@ -50,13 +50,13 @@ const addEmployeePrompts = [
         type: 'list',
         name: 'newEmpRole',
         message: 'What is the role of the new employee?',
-        choices: updateRoles()
+        choices: updatedRoleChoices
     },
     {
         type: 'list',
         name: 'newEmpManager',
         message: 'Who is the new employee\'s manager?',
-        choices: updateManagers()
+        choices: updatedManagerChoices
     }
 ];
 
