@@ -1,3 +1,4 @@
+//Prompt for adding a department
 const addDeptPrompt = {
     type: 'input',
     name: 'addDept',

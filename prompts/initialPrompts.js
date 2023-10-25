@@ -1,3 +1,4 @@
+//Main menu
 const initialPrompts = {
     type: 'list',
     name: 'options',

@@ -6,6 +6,7 @@ const db = mysql.createConnection({
     database: 'employee_data_db'
   },
 );
+//Pulls latest list of roles
 const updatedRoleChoices = [];
 const updateRoles = () => {
     
@@ -18,9 +19,8 @@ const updateRoles = () => {
             };
         }
     })
-    // return updatedRoleChoices;
 };
-
+//Pulls latest list of managers
 const updatedManagerChoices = [];
 const updateManagers = () => {    
     db.query('SELECT CONCAT(first_name, " ", last_name) AS manager_name FROM employee WHERE manager_id IS NULL ORDER BY employee.id ASC', function (err, results) {
@@ -32,9 +32,8 @@ const updateManagers = () => {
             };
         }
     })
-    // return updatedManagerChoices;
 };
-
+//Prompts for adding an employee
 const addEmployeePrompts = [
     {
         type: 'input',

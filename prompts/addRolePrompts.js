@@ -6,7 +6,7 @@ const db = mysql.createConnection({
     database: 'employee_data_db'
   },
 );
-
+//Updates department list
 const updatedDeptChoices = [];
 const updateDepts = () => {
     db.query('Select name from department ORDER BY department.id ASC', function (err, results) {
@@ -19,7 +19,7 @@ const updateDepts = () => {
         }
     })
 };
-
+//Prompts for adding a role
 const addRolePrompts = [
     {
         type: 'input',
