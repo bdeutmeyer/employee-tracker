@@ -6,7 +6,7 @@ const db = mysql.createConnection({
     database: 'employee_data_db'
   },
 );
-
+//Function to update list of roles
 const updateRoles = () => {
     const updatedRoleChoices = [];
     db.query('Select title FROM role ORDER BY role.id ASC', function (err, results) {
@@ -20,7 +20,7 @@ const updateRoles = () => {
     })
     return updatedRoleChoices;
 };
-
+//Function to update list of employees
 const updateEmployees = () => {
     const updatedEmpChoices = [];
     db.query('Select CONCAT(first_name, " ", last_name) AS employee_name FROM employee ORDER BY employee.id ASC', function (err, results) {
@@ -34,7 +34,7 @@ const updateEmployees = () => {
     })
     return updatedEmpChoices;
 };
-
+//Update Employee Role prompts
 const updateEmpRolePrompts = [
     {
         type: 'list',

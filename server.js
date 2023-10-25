@@ -6,7 +6,7 @@ const { updateRoles, updateManagers, addEmployeePrompts } = require('./prompts/a
 const { updateDepts, addRolePrompts } = require('./prompts/addRolePrompts');
 const { updateEmployees, updateEmpRolePrompts } = require('./prompts/updateEmpRolePrompts');
 
-// create the connection to database
+// Creates the connection to the database
 const db = mysql.createConnection({
     host: '127.0.0.1',
     user: 'root',
@@ -15,28 +15,28 @@ const db = mysql.createConnection({
   },
   console.log('Connected to the database'),
 );
-
+//View All Departments query
 const viewAllDepts = () => {
   db.query('SELECT * FROM department ORDER BY department.id ASC', function (err, results) {
     err ? console.log(err) :  console.table(results);
     init();
     });
   };
-
+//View All Roles query
 const viewAllRoles = () => {
   db.query('SELECT title, salary, department.name AS department FROM role JOIN department ON department_id = department.id ORDER BY role.id ASC', function (err, results) {
     err ? console.log(err) : console.table(results);
     init();
   });
 };
-
+//View All Employees query
 const viewAllEmpl = () => {
   db.query("SELECT e.first_name AS Employee_FirstName, e.last_name AS Employee_LastName,r.title AS Employee_Role, d.name AS Employee_Department,CONCAT(m.first_name, ' ', m.last_name) AS Manager_Name FROM employee e INNER JOIN role r ON e.role_id = r.id INNER JOIN department d ON r.department_id = d.id LEFT JOIN employee m ON e.manager_id = m.id", function (err, results) {
     err ? console.log(err) : console.table(results);
     init();
   });
 };
-
+//Add a Department query
 const addDepartment = () => {
   inquirer.prompt(addDeptPrompt)
   .then((answer) => {
@@ -47,7 +47,7 @@ const addDepartment = () => {
     init();
   });
 };
-
+//Add a Role query
 const addRole = () => {
   updateDepts();
   inquirer.prompt(addRolePrompts)
@@ -66,7 +66,7 @@ const addRole = () => {
     init();
   });
 };
-
+//Add an employee query
 const addEmployee = () => {
   updateRoles();
   updateManagers();
@@ -91,7 +91,7 @@ const addEmployee = () => {
     init();
   }); 
 }; 
-
+//Update an Employee Role query
 const updateEmployeeRole = () => {
   updateEmployees();
   inquirer.prompt(updateEmpRolePrompts)
@@ -114,7 +114,7 @@ const updateEmployeeRole = () => {
   init();
   });
 };
-
+//Initial function, main menu
 const init = () => {
   inquirer  
   .prompt(initialPrompts)
@@ -155,7 +155,4 @@ const init = () => {
   })
 }
 updateDepts();
-// updateRoles();
-// updateEmployees();
-// updateManagers();
 init();
