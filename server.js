@@ -2,9 +2,9 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const initialPrompts = require('./prompts/initialPrompts');
 const addDeptPrompt = require('./prompts/addDeptPrompt');
-const {  addEmployeePrompts } = require('./prompts/addEmployeePrompts');
+const { updateRoles, updateManagers, addEmployeePrompts } = require('./prompts/addEmployeePrompts');
 const { updateDepts, addRolePrompts } = require('./prompts/addRolePrompts');
-const { updateEmpRolePrompts, updateEmployees } = require('./prompts/updateEmpRolePrompts');
+const { updateEmployees, updateEmpRolePrompts } = require('./prompts/updateEmpRolePrompts');
 
 // create the connection to database
 const db = mysql.createConnection({
@@ -68,6 +68,8 @@ const addRole = () => {
 };
 
 const addEmployee = () => {
+  updateRoles();
+  updateManagers();
   inquirer.prompt(addEmployeePrompts)
   .then((answer) => {
     let newEmpRoleId;
@@ -102,10 +104,11 @@ const updateEmployeeRole = () => {
       let updatedEmpId;
       db.query(`SELECT id FROM employee WHERE CONCAT(first_name, " ", last_name) = '${answer.whichEmp}'`, function (err, results) {
         err ? console.log(err) : updatedEmpId = results[0].id;
-      })
+      
 
-      db.query('UPDATE employee SET role_id = ? WHERE id = ?', [updatedRoleId , updatedEmpId], function (err, results) {
+        db.query('UPDATE employee SET role_id = ? WHERE id = ?', [updatedRoleId , updatedEmpId], function (err, results) {
         err ? console.log(err) : console.log('Employee role updated successfully.')
+        })
       })
     });
   init();

@@ -29,7 +29,7 @@ const updateEmployees = () => {
         } else {
             for(let i = 0; i < results.length; i++) {
                 updatedEmpChoices.push(results[i].employee_name);
-            };
+            }; 
         }
     })
     return updatedEmpChoices;
